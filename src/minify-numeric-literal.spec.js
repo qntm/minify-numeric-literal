@@ -145,6 +145,7 @@ describe("minify-numeric-literal", function() {
     expect(minifyNumericLiteral("Infinity")).toBe(null);
     expect(minifyNumericLiteral("-Infinity")).toBe(null);
     expect(minifyNumericLiteral("NaN")).toBe(null);
+    expect(minifyNumericLiteral(371000)).toBe(null);
   });
 
 });

@@ -162,6 +162,10 @@ var fromNumber = function(x) {
 };
 
 var minifyNumericLiteral = function(str) {
+  if(typeof str !== "string") {
+    return null;
+  }
+
   if(
     !/^(((0|[1-9][0-9]*)(\.[0-9]*)?)|\.[0-9]+)([eE][+\-]?[0-9]+)?$/.exec(str)
     && !/^0[bB][01]+$/.exec(str)
