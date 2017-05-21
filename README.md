@@ -15,8 +15,11 @@ const mnl = require("minify-numeric-literal")
 
 // Some literals are unchanged
 mnl("0")                     // "0"
-mnl("0.78")                  // "0.78"
 mnl("126")                   // "126"
+mnl("100845")                // "100845"
+
+// Always omit a leading 0 before the decimal point
+mnl("0.00783")               // ".00783", saves 1 character
 
 // Use exponents when appropriate
 mnl("0.000783")              // "783e-6", saves 2 characters
