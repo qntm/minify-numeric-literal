@@ -30,10 +30,10 @@ mnl("1.476925632985436e+10") // "14769256329.85436", saves 4 characters
 mnl("10000000000000002")     // "0x2386f26fc10002", saves 1 character
 
 // Use 0xFFFF...F when it works out the same as 0x10000...0
-mnl("72057594037927936") // "0xffffffffffffff", saves 1 character
+mnl("72057594037927936")     // "0xffffffffffffff", saves 1 character
 
 // Lose the decimal point when possible
-mnl("1.476925632985436e99") // "1476925632985436e84", saves 1 character
+mnl("1.476925632985436e99")  // "1476925632985436e84", saves 1 character
 
 // Cannot produce meaningful output unless the input is a numeric literal
 mnl("-7")                    // null
@@ -50,17 +50,17 @@ If you want to pass in a number directly:
 const fromNumber = require("minify-numeric-literal").fromNumber
 
 // Works as normal
-fromNumber(9000)        // "9e3"
+fromNumber(9000)      // "9e3"
 
 // Cannot produce meaningful output unless the input is a non-negative number
-fromNumber(-7)          // null
-fromNumber(-0)          // null
-fromNumber(-Infinity)   // null
-fromNumber(NaN)         // null
-fromNumber("asdf")      // null
+fromNumber(-7)        // null
+fromNumber(-0)        // null
+fromNumber(-Infinity) // null
+fromNumber(NaN)       // null
+fromNumber("asdf")    // null
 
 // But since there is a numeric literal for `Infinity`...
-fromNumber(Infinity)    // "2e308"
+fromNumber(Infinity)  // "2e308"
 ```
 
 ## FAQ

@@ -161,21 +161,39 @@ var fromNumber = function(x) {
   }, null);
 };
 
+var parseNumericLiteral = function(str) {
+  var match = /^0[bB]([01]+)$/.exec(str);
+  if(match !== null) {
+    return Number.parseInt(match[1], 0b10);
+  }
+
+  match = /^0[oO]([0-7]+)$/.exec(str);
+  if(match !== null) {
+    return Number.parseInt(match[1], 0o10);
+  }
+
+  match = /^0[xX]([0-9a-fA-F]+)$/.exec(str);
+  if(match !== null) {
+    return Number.parseInt(match[1], 0x10);
+  }
+
+  match = /^(((0|[1-9][0-9]*)(\.[0-9]*)?)|\.[0-9]+)([eE][+\-]?[0-9]+)?$/.exec(str);
+  if(match !== null) {
+    return Number.parseFloat(match[0]);
+  }
+
+  return null;
+};
+
 var minifyNumericLiteral = function(str) {
   if(typeof str !== "string") {
     return null;
   }
 
-  if(
-    !/^(((0|[1-9][0-9]*)(\.[0-9]*)?)|\.[0-9]+)([eE][+\-]?[0-9]+)?$/.exec(str)
-    && !/^0[bB][01]+$/.exec(str)
-    && !/^0[oO][0-7]+$/.exec(str)
-    && !/^0[xX][0-9a-fA-F]+$/.exec(str)
-  ) {
+  var x = parseNumericLiteral(str);
+  if(x === null) {
     return null;
   }
-
-  var x = eval(str); // Aaaaa!
 
   return fromNumber(x);
 };
@@ -183,5 +201,6 @@ var minifyNumericLiteral = function(str) {
 module.exports = minifyNumericLiteral;
 module.exports.fromNumber = fromNumber;
 module.exports._parseDecimalLiteral = parseDecimalLiteral;
+module.exports._parseNumericLiteral = parseNumericLiteral;
 module.exports._getDecimalLiteral = getDecimalLiteral;
 module.exports._getHexLiteral = getHexLiteral;
