@@ -1,6 +1,6 @@
 {
   "name": "minify-numeric-literal",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "Numerical literal minification for JavaScript",
   "main": "src/index.js",
   "devDependencies": {
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ferno/minify-numeric-literal.git"
+    "url": "https://github.com/qntm/minify-numeric-literal.git"
   },
   "author": "qntm",
   "license": "MIT"

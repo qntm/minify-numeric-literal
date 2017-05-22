@@ -14,37 +14,38 @@ npm install minify-numeric-literal
 const mnl = require("minify-numeric-literal")
 
 // Some literals are unchanged
-mnl("0")                     // "0"
-mnl("126")                   // "126"
-mnl("100845")                // "100845"
+mnl("0")                       // "0"
+mnl("126")                     // "126"
+mnl("100845")                  // "100845"
 
 // Always omit a leading 0 before the decimal point
-mnl("0.00783")               // ".00783", saves 1 character
+mnl("0.00783")                 // ".00783", saves 1 character
 
 // Use exponents when appropriate
-mnl("0.000783")              // "783e-6", saves 2 characters
-mnl("9000")                  // "9e3", saves 1 character
-mnl("1000000000000")         // "1e12", saves 9 characters
+mnl("0.000783")                // "783e-6", saves 2 characters
+mnl("9000")                    // "9e3", saves 1 character
+mnl("1000000000000")           // "1e12", saves 9 characters
 
 // Lose the exponent when appropriate
-mnl("1.476925632985436e+10") // "14769256329.85436", saves 4 characters
+mnl("1.476925632985436e+10")   // "14769256329.85436", saves 4 characters
 
 // Use hex when appropriate
-mnl("10000000000000002")     // "0x2386f26fc10002", saves 1 character
+mnl("10000000000000002")       // "0x2386f26fc10002", saves 1 character
 
 // Use 0xFFFF...F when it works out the same as 0x10000...0
-mnl("72057594037927936")     // "0xffffffffffffff", saves 1 character
+mnl("72057594037927936")       // "0xffffffffffffff", saves 1 character
 
 // Lose the decimal point when possible
-mnl("1.476925632985436e99")  // "1476925632985436e84", saves 1 character
+mnl("1.476925632985436e99")    // "1476925632985436e84", saves 1 character
+mnl("2.2250738585072036e-208") // "22250738585072036e-224", saves 1 character
 
 // Cannot produce meaningful output unless the input is a numeric literal
-mnl("-7")                    // null
-mnl("-0")                    // null
-mnl("NaN")                   // null
-mnl("Infinity")              // null
-mnl("asdf")                  // null
-mnl(371000)                  // null
+mnl("-7")                      // null
+mnl("-0")                      // null
+mnl("NaN")                     // null
+mnl("Infinity")                // null
+mnl("asdf")                    // null
+mnl(371000)                    // null
 ```
 
 If you want to pass in a number directly:
@@ -65,6 +66,10 @@ fromNumber("asdf")    // null
 // But since there is a numeric literal for `Infinity`...
 fromNumber(Infinity)  // "2e308"
 ```
+
+* For an arbitrary number `x`, the longest possible output from `String(x)` is 24 characters e.g. `"-2.2250738585072036e-208"`.
+* For a non-negative number `x`, the longest possible output from `String(x)` is 23 characters e.g. `"2.2250738585072036e-208"`.
+* For a non-negative number `x`, the longest possible output from `fromNumber(x)` is 22 characters e.g. `"22250738585072036e-224"`.
 
 ## FAQ
 

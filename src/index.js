@@ -95,8 +95,8 @@ var getHexLiteral = function(x) {
     return null;
   }
 
-  // A positive number takes at most 22 characters to represent as
-  // a decimal literal, e.g. `2.225073858507202e+208`. So if the hexadecimal
+  // A positive integer takes at most 22 characters to represent as
+  // a decimal literal, e.g. `2.2250738585072034e208`. So if the hexadecimal
   // literal is larger than this, there's no point in continuing because
   // the decimal literal will invariably be the same length or shorter.
   if(x > 0x10000000000000000000) { // 22 chars

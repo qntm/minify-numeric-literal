@@ -124,6 +124,7 @@ describe("minify-numeric-literal", function() {
     expect(minifyNumericLiteral("1.4e-99")).toBe("1.4e-99"); // And here
     expect(minifyNumericLiteral("1.476925632985436e-100")).toBe("1476925632985436e-115");
     expect(minifyNumericLiteral("1.476925632985436e-308")).toBe("1476925632985436e-323");
+    expect(minifyNumericLiteral("2.2250738585072036e-208")).toBe("22250738585072036e-224");
   });
 
   it("truncates the optional leading '0'", function() {
@@ -147,5 +148,4 @@ describe("minify-numeric-literal", function() {
     expect(minifyNumericLiteral("NaN")).toBe(null);
     expect(minifyNumericLiteral(371000)).toBe(null);
   });
-
 });
