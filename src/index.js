@@ -1,8 +1,10 @@
 "use strict";
 
 /**
-  Parse the string representation of a non-zero number to yield its
+  Parse the string representation of a number to yield its
   mantissa (always a positive integer) and nominal exponent.
+  The shortest possible mantissa has length 1 e.g. "0", "9". The
+  longest possible mantissa has length 17 e.g. "22250738585072034"
 */
 var parseDecimalLiteral = function(str) {
   var match = /^(\d*?)(0*)(?:\.(0*)(\d*?))?(?:e([+-]?\d+))?$/.exec(str);
@@ -13,7 +15,15 @@ var parseDecimalLiteral = function(str) {
   var exponent = match[5] || "0";
 
   if(decimal === "") {
-    // e.g. 7, 7890.000. Omit the decimal and zeroes
+    if(integer === "") {
+      // e.g. "0", "0.000e7"
+      return {
+        mantissa: "",
+        exponent: Number(exponent)
+      };
+    }
+
+    // e.g. "7", "7890.000". Omit the decimal and zeroes
     return {
       mantissa: integer,
       exponent: Number(exponent) + trailingZeroes.length
@@ -21,18 +31,54 @@ var parseDecimalLiteral = function(str) {
   }
 
   if(integer === "") {
-    // e.g. 0.04. Omit the integer and zeroes
+    // e.g. "0.04". Omit the integer and zeroes
     return {
       mantissa: decimal,
       exponent: Number(exponent) - leadingZeroes.length - decimal.length
     };
   }
 
-  // e.g. 791000.001. Keep everything
+  // e.g. "791000.001". Keep everything
   return {
     mantissa: integer + trailingZeroes + leadingZeroes + decimal,
     exponent: Number(exponent) - leadingZeroes.length - decimal.length
   };
+};
+
+var shortest = function(strings) {
+  return strings.reduce(function(best, strings) {
+    return strings !== null && (best === null || strings.length < best.length) ? strings : best;
+  }, null);
+};
+
+var stringifyDecimalLiteral = function(parsed) {
+  var mantissa = parsed.mantissa; // string. Could be "" for inputs like "0"
+  var exponent = parsed.exponent; // number
+
+  // The "canonical" representation is:
+  var canonical = mantissa + "e" + String(exponent);
+  // e.g. "0e0", "999e-6", "999e3", "999e-1"
+
+  // But there are several cases where we can do better:
+
+  var dotPos = mantissa.length + exponent;
+
+  var beforeDot =
+    dotPos <= 0 ? null :
+    dotPos <= mantissa.length ? mantissa.substring(0, dotPos) :
+    mantissa + "0".repeat(dotPos - mantissa.length);
+  var afterDot =
+    dotPos < 0 ? "0".repeat(-dotPos) + mantissa :
+    dotPos < mantissa.length ? mantissa.substring(dotPos) :
+    null;
+
+  // `beforeDot` and `afterDot` are never "", always `null`
+
+  var noExponent = afterDot === null
+    ? (beforeDot === null ? "0" : beforeDot)
+    : (beforeDot === null ? "." + afterDot : beforeDot + "." + afterDot);
+
+  return shortest([noExponent, canonical]);
 };
 
 /**
@@ -41,48 +87,8 @@ var parseDecimalLiteral = function(str) {
   none).
 */
 var getDecimalLiteral = function(x) {
-  if(x === 0) {
-    return "0";
-  }
-
-  var best = String(x);
-
-  var parsed = parseDecimalLiteral(best);
-  var mantissa = parsed.mantissa;
-  var exponent = parsed.exponent;
-
-  // Omit the exponent if at all possible.
-
-  var candidate;
-  if(0 <= exponent && exponent <= 2) {
-    // E.g. `3431e0`, `8e1`, `17e2`
-    // Return `3431`, `80`, `1700`
-    candidate = mantissa += "0".repeat(exponent);
-  }
-
-  else if(-mantissa.length - 2 <= exponent && exponent < 0) {
-    var dotGoesAt = mantissa.length + exponent;
-    if(dotGoesAt >= 0) {
-      // E.g. `6784e-4`, `6784e-3`, `6784e-2`, `6784e-1`
-      // Return `.6784`, `6.784`, `67.84`, `6.784`. We gain
-      // the dot (one character) but lose the exponent (three).
-      candidate = mantissa.substring(0, dotGoesAt) + "." + mantissa.substring(dotGoesAt);
-    } else {
-      // E.g. `6784e-5`, `6784e-6`
-      // Return `.06784`, `.006784`. We gain the dot and up to 2
-      // zeroes, but lose the exponent.
-      candidate = "." + "0".repeat(-dotGoesAt) + mantissa;
-    }
-  }
-
-  else {
-    candidate = mantissa + "e" + String(exponent);
-  }
-
-  return candidate.length < best.length ? candidate : best;
+  return stringifyDecimalLiteral(parseDecimalLiteral(String(x)));
 };
-
-"use strict";
 
 /**
   Assumes `x` is a non-negative finite number.
@@ -153,14 +159,14 @@ var fromNumber = function(x) {
     return "2e308";
   }
 
-  return [
-    getDecimalLiteral(x),
-    getHexLiteral(x) // second choice
-  ].reduce(function(best, literal) {
-    return literal !== null && (best === null || literal.length < best.length) ? literal : best;
-  }, null);
+  return shortest([String(x), getDecimalLiteral(x), getHexLiteral(x)]);
 };
 
+/**
+  We need to know exactly what number the input string represents. This step is
+  necessary because the input string could be invalid, contain superfluous digits
+  or evaluate to `Infinity`.
+*/
 var parseNumericLiteral = function(str) {
   var match = /^0[bB]([01]+)$/.exec(str);
   if(match !== null) {
@@ -204,3 +210,4 @@ module.exports._parseDecimalLiteral = parseDecimalLiteral;
 module.exports._parseNumericLiteral = parseNumericLiteral;
 module.exports._getDecimalLiteral = getDecimalLiteral;
 module.exports._getHexLiteral = getHexLiteral;
+module.exports._stringifyDecimalLiteral = stringifyDecimalLiteral;

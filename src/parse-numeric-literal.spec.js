@@ -75,6 +75,11 @@ describe("parse-numeric-literal", function() {
     expect(parseNumericLiteral("0B0001001")).toBe(0B0001001);
     expect(parseNumericLiteral("0o777")).toBe(0o777);
     expect(parseNumericLiteral("0xabcde")).toBe(0xabcde);
+    expect(parseNumericLiteral("123")).toBe(123);
+    expect(parseNumericLiteral("123.456")).toBe(123.456);
+    expect(parseNumericLiteral(".456")).toBe(.456);
+    expect(parseNumericLiteral(".456e+789")).toBe(.456e+789);
+    expect(parseNumericLiteral("123e+789")).toBe(123e+789);
     expect(parseNumericLiteral("123.456e+789")).toBe(123.456e+789);
   });
 });

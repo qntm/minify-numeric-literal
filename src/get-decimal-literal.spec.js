@@ -1,11 +1,15 @@
 "use strict";
 
+var minifyNumericLiteral = require("./index.js");
+
 // Sanity checked version
 var getDecimalLiteral = function(x) {
-  var result = require("./index.js")._getDecimalLiteral(x);
+  var result = minifyNumericLiteral._getDecimalLiteral(x);
   expect(Object.is(eval(result), x)).toBe(true);
   return result;
 };
+
+var _getDecimalLiteralFromParsed = minifyNumericLiteral._getDecimalLiteralFromParsed;
 
 describe("_getDecimalLiteral", function() {
   it("returns the original number most of the time", function() {
@@ -54,10 +58,10 @@ describe("_getDecimalLiteral", function() {
     expect(getDecimalLiteral(1.476925632985436e-10)).toBe("1476925632985436e-25");
     expect(getDecimalLiteral(1.476925632985436e-69)).toBe("1476925632985436e-84");
     expect(getDecimalLiteral(1.476925632985436e-84)).toBe("1476925632985436e-99");
-    expect(getDecimalLiteral(1.476925632985436e-85)).toBe("1.476925632985436e-85"); // Saves nothing here...
-    expect(getDecimalLiteral(1.476925632985436e-86)).toBe("1.476925632985436e-86"); // And here
-    expect(getDecimalLiteral(1.476925632985436e-99)).toBe("1.476925632985436e-99"); // And here
-    expect(getDecimalLiteral(1.4e-99)).toBe("1.4e-99"); // Not "14e-100", which is not shorter
+    expect(getDecimalLiteral(1.476925632985436e-85)).toBe("1476925632985436e-100");
+    expect(getDecimalLiteral(1.476925632985436e-86)).toBe("1476925632985436e-101");
+    expect(getDecimalLiteral(1.476925632985436e-99)).toBe("1476925632985436e-114");
+    expect(getDecimalLiteral(1.4e-99)).toBe("14e-100");
     expect(getDecimalLiteral(1.476925632985436e-100)).toBe("1476925632985436e-115");
     expect(getDecimalLiteral(1.476925632985436e-308)).toBe("1476925632985436e-323");
   });

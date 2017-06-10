@@ -16,4 +16,14 @@ describe("_parseDecimalLiteral", function() {
     expect(_parseDecimalLiteral("0.000783")).toEqual({mantissa: "783", exponent: -6});
     expect(_parseDecimalLiteral("1.000")).toEqual({mantissa: "1", exponent: 0});
   });
+
+  it("handles '0'", function() {
+    expect(_parseDecimalLiteral("0")).toEqual({mantissa: "", exponent: 0});
+    expect(_parseDecimalLiteral("0.000")).toEqual({mantissa: "", exponent: 0});
+    expect(_parseDecimalLiteral("0e12")).toEqual({mantissa: "", exponent: 12});
+    expect(_parseDecimalLiteral("0e-19")).toEqual({mantissa: "", exponent: -19});
+    expect(_parseDecimalLiteral("0.00000e7")).toEqual({mantissa: "", exponent: 7});
+    expect(_parseDecimalLiteral("0.00000e-7")).toEqual({mantissa: "", exponent: -7});
+    expect(_parseDecimalLiteral("0e0")).toEqual({mantissa: "", exponent: 0});
+  });
 });
