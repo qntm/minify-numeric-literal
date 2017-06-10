@@ -2,9 +2,14 @@
 
 /**
   Parse the string representation of a number to yield its
-  mantissa (always a positive integer) and nominal exponent.
-  The shortest possible mantissa has length 1 e.g. "0", "9". The
-  longest possible mantissa has length 17 e.g. "22250738585072034"
+  "canonical" mantissa and exponent. E.g.:
+
+    "7890.0e4" -> {mantissa: "789", exponent: 5}
+
+  The mantissa always starts and ends with a non-zero digit
+  except in the special case of strings represention 0, when
+  the mantissa is "". The longest possible mantissa has
+  length 17 e.g. "22250738585072034".
 */
 var parseDecimalLiteral = function(str) {
   var match = /^(\d*?)(0*)(?:\.(0*)(\d*?))?(?:e([+-]?\d+))?$/.exec(str);
@@ -19,7 +24,7 @@ var parseDecimalLiteral = function(str) {
       // e.g. "0", "0.000e7"
       return {
         mantissa: "",
-        exponent: Number(exponent)
+        exponent: 0
       };
     }
 
@@ -45,10 +50,15 @@ var parseDecimalLiteral = function(str) {
   };
 };
 
+/**
+  Return the shortest string of an array of strings.
+*/
 var shortest = function(strings) {
-  return strings.reduce(function(best, strings) {
-    return strings !== null && (best === null || strings.length < best.length) ? strings : best;
-  }, null);
+  return strings.filter(function(string) {
+    return string !== null;
+  }).sort(function(a, b) {
+    return a.length - b.length;
+  })[0];
 };
 
 var stringifyDecimalLiteral = function(parsed) {
@@ -57,7 +67,7 @@ var stringifyDecimalLiteral = function(parsed) {
 
   // The "canonical" representation is:
   var canonical = mantissa + "e" + String(exponent);
-  // e.g. "0e0", "999e-6", "999e3", "999e-1"
+  // e.g. "e0", "999e-6", "999e3", "999e-1"
 
   // But there are several cases where we can do better:
 

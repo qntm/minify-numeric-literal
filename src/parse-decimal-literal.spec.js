@@ -20,10 +20,10 @@ describe("_parseDecimalLiteral", function() {
   it("handles '0'", function() {
     expect(_parseDecimalLiteral("0")).toEqual({mantissa: "", exponent: 0});
     expect(_parseDecimalLiteral("0.000")).toEqual({mantissa: "", exponent: 0});
-    expect(_parseDecimalLiteral("0e12")).toEqual({mantissa: "", exponent: 12});
-    expect(_parseDecimalLiteral("0e-19")).toEqual({mantissa: "", exponent: -19});
-    expect(_parseDecimalLiteral("0.00000e7")).toEqual({mantissa: "", exponent: 7});
-    expect(_parseDecimalLiteral("0.00000e-7")).toEqual({mantissa: "", exponent: -7});
+    expect(_parseDecimalLiteral("0e12")).toEqual({mantissa: "", exponent: 0});
+    expect(_parseDecimalLiteral("0e-19")).toEqual({mantissa: "", exponent: 0});
+    expect(_parseDecimalLiteral("0.00000e7")).toEqual({mantissa: "", exponent: 0});
+    expect(_parseDecimalLiteral("0.00000e-7")).toEqual({mantissa: "", exponent: 0});
     expect(_parseDecimalLiteral("0e0")).toEqual({mantissa: "", exponent: 0});
   });
 });
