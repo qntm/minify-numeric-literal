@@ -1,6 +1,25 @@
 "use strict";
 
 /**
+  Return the shortest string of an array of strings.
+*/
+var shortest = function(strings) {
+  return strings.filter(function(string) {
+    return string !== null;
+  }).sort(function(a, b) {
+    return a.length - b.length;
+  })[0];
+};
+
+var toString = function(x, methodCallContext) {
+  var str = String(x);
+  if(methodCallContext && !str.match(/[.eE]/)) {
+    str += ".";
+  }
+  return str;
+};
+
+/**
   Parse the string representation of a number to yield its
   "canonical" mantissa and exponent. E.g.:
 
@@ -51,26 +70,17 @@ var parseDecimalLiteral = function(str) {
 };
 
 /**
-  Return the shortest string of an array of strings.
+  The "canonical" representation is:
+  e.g. "e0", "999e-6", "999e3", "999e-1"
 */
-var shortest = function(strings) {
-  return strings.filter(function(string) {
-    return string !== null;
-  }).sort(function(a, b) {
-    return a.length - b.length;
-  })[0];
+var canonical = function(mantissa, exponent) {
+  return mantissa + "e" + String(exponent);
 };
 
-var stringifyDecimalLiteral = function(parsed) {
-  var mantissa = parsed.mantissa; // string. Could be "" for inputs like "0"
-  var exponent = parsed.exponent; // number
-
-  // The "canonical" representation is:
-  var canonical = mantissa + "e" + String(exponent);
-  // e.g. "e0", "999e-6", "999e3", "999e-1"
-
-  // But there are several cases where we can do better:
-
+/**
+  e.g. "4792346200000000000000", ".00000000000004242"
+*/
+var exponentLess = function(mantissa, exponent, methodCallContext) {
   var dotPos = mantissa.length + exponent;
 
   var beforeDot =
@@ -84,11 +94,9 @@ var stringifyDecimalLiteral = function(parsed) {
 
   // `beforeDot` and `afterDot` are never "", always `null`
 
-  var noExponent = afterDot === null
-    ? (beforeDot === null ? "0" : beforeDot)
-    : (beforeDot === null ? "." + afterDot : beforeDot + "." + afterDot);
-
-  return shortest([noExponent, canonical]);
+  return afterDot === null
+    ? (beforeDot === null ? "0" : beforeDot) + (methodCallContext ? "." : "")
+    : (beforeDot === null ? "" : beforeDot) + "." + afterDot;
 };
 
 /**
@@ -96,15 +104,23 @@ var stringifyDecimalLiteral = function(parsed) {
   literal representation of that number, if possible (or `null` if there is
   none).
 */
-var getDecimalLiteral = function(x) {
-  return stringifyDecimalLiteral(parseDecimalLiteral(String(x)));
+var decimalLiteral = function(x, methodCallContext) {
+  var parsed = parseDecimalLiteral(String(x));
+
+  var mantissa = parsed.mantissa; // string. Could be "" for inputs like "0"
+  var exponent = parsed.exponent; // number
+
+  return shortest([
+    exponentLess(mantissa, exponent, methodCallContext), // preferred
+    canonical(mantissa, exponent)
+  ]);
 };
 
 /**
   Assumes `x` is a non-negative finite number.
   Return the shortest hexadecimal literal for the supplied number, if any. Null otherwise.
 */
-var getHexLiteral = function(x) {
+var hexLiteral = function(x) {
   // JavaScript does not accept hexadecimal literals for anything other than
   // integers.
   if(!Number.isInteger(x)) {
@@ -147,7 +163,7 @@ var getHexLiteral = function(x) {
 /**
   Return the smallest literal representation of a float, if one exists.
 */
-var fromNumber = function(x) {
+var fromNumber = function(x, methodCallContext) {
   if(typeof x !== "number") {
     return null;
   }
@@ -169,7 +185,11 @@ var fromNumber = function(x) {
     return "2e308";
   }
 
-  return shortest([String(x), getDecimalLiteral(x), getHexLiteral(x)]);
+  return shortest([
+    toString(x, methodCallContext),
+    decimalLiteral(x, methodCallContext),
+    hexLiteral(x)
+  ]);
 };
 
 /**
@@ -201,7 +221,13 @@ var parseNumericLiteral = function(str) {
   return null;
 };
 
-var minifyNumericLiteral = function(str) {
+/**
+  Take a numeric literal e.g. "99e0" and return a minified one
+  e.g. "99". If `methodCallContext` is truthy, we assume the literal appears
+  in a context like `99e0.toString()` such that `99.toString()` would be a
+  syntax error, so return "99." instead.
+*/
+var minifyNumericLiteral = function(str, methodCallContext) {
   if(typeof str !== "string") {
     return null;
   }
@@ -211,13 +237,15 @@ var minifyNumericLiteral = function(str) {
     return null;
   }
 
-  return fromNumber(x);
+  return fromNumber(x, methodCallContext);
 };
 
 module.exports = minifyNumericLiteral;
-module.exports.fromNumber = fromNumber;
+module.exports._shortest = shortest;
+module.exports._toString = toString;
 module.exports._parseDecimalLiteral = parseDecimalLiteral;
+module.exports._exponentLess = exponentLess;
+module.exports._decimalLiteral = decimalLiteral;
+module.exports._hexLiteral = hexLiteral;
 module.exports._parseNumericLiteral = parseNumericLiteral;
-module.exports._getDecimalLiteral = getDecimalLiteral;
-module.exports._getHexLiteral = getHexLiteral;
-module.exports._stringifyDecimalLiteral = stringifyDecimalLiteral;
+module.exports.fromNumber = fromNumber;

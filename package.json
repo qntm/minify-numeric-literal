@@ -2,12 +2,13 @@
   "name": "minify-numeric-literal",
   "version": "0.0.6",
   "description": "Numerical literal minification for JavaScript",
-  "main": "src/index.js",
+  "main": "src/main.js",
   "devDependencies": {
     "istanbul": "^0.4.5",
     "jasmine": "^2.6.0"
   },
   "scripts": {
+    "jasmine": "node ./node_modules/jasmine/bin/jasmine.js ./src/*.spec.js",
     "test": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/jasmine/bin/jasmine.js ./src/*.spec.js"
   },
   "repository": {

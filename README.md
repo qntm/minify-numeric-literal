@@ -73,6 +73,12 @@ fromNumber(Infinity)  // "2e308"
 
 ## FAQ
 
+### What if my numeric literal is being used in a method call context e.g. `90.0.toString()`?
+
+In situation, `mnl("90.0")` or `fromNumber(90.0)` both return `"90"`, which is no good for your purpose because `90.toString()` is syntactically invalid JavaScript.
+
+You may pass in the `methodCallContext` flag, i.e. `mnl("90.0", true)` or `mnl.fromNumber(90.0, true)`. The result returned is `90.`, eventually resulting in the syntactically valid `90..toString()`.
+
 ### Why not accept negative numbers?
 
 JavaScript does not have negative numeric literals. A JavaScript source code parser encountering an expression like `-9000` should return a unary negation operator (`-`) followed by a non-negative numeric literal `9000`, the latter of which `mnl` accepts.
