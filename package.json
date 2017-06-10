@@ -1,8 +1,8 @@
 {
   "name": "minify-numeric-literal",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Numerical literal minification for JavaScript",
-  "main": "src/main.js",
+  "main": "src/minify-numeric-literal.js",
   "devDependencies": {
     "istanbul": "^0.4.5",
     "jasmine": "^2.6.0"
