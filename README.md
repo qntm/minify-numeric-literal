@@ -75,7 +75,7 @@ fromNumber(Infinity)  // "2e308"
 
 ### What if my numeric literal is being used in a method call context e.g. `90.0.toString()`?
 
-In situation, `mnl("90.0")` or `fromNumber(90.0)` both return `"90"`, which is no good for your purpose because `90.toString()` is syntactically invalid JavaScript.
+In this situation, `mnl("90.0")` or `fromNumber(90.0)` both return `"90"`, which is no good for your purpose because `90.toString()` is syntactically invalid JavaScript.
 
 You may pass in the `methodCallContext` flag, i.e. `mnl("90.0", true)` or `mnl.fromNumber(90.0, true)`. The result returned is `90.`, eventually resulting in the syntactically valid `90..toString()`.
 
