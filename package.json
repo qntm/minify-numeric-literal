@@ -1,7 +1,12 @@
 {
   "name": "minify-numeric-literal",
-  "version": "0.0.8",
+  "version": "1.0.0",
   "description": "Numerical literal minification for JavaScript",
+  "homepage": "https://github.com/qntm/minify-numeric-literal",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/qntm/minify-numeric-literal.git"
+  },
   "main": "src/minify-numeric-literal.js",
   "devDependencies": {
     "istanbul": "^0.4.5",
@@ -10,10 +15,6 @@
   "scripts": {
     "jasmine": "node ./node_modules/jasmine/bin/jasmine.js ./src/*.spec.js",
     "test": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/jasmine/bin/jasmine.js ./src/*.spec.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/qntm/minify-numeric-literal.git"
   },
   "author": "qntm",
   "license": "MIT"
