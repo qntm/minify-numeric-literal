@@ -10,7 +10,7 @@
   "main": "src/minify-numeric-literal.js",
   "devDependencies": {
     "istanbul": "^0.4.5",
-    "jasmine": "^2.6.0"
+    "jasmine": "^3.6.1"
   },
   "scripts": {
     "jasmine": "node ./node_modules/jasmine/bin/jasmine.js ./src/*.spec.js",
