@@ -1,6 +1,6 @@
 {
   "name": "minify-numeric-literal",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Numerical literal minification for JavaScript",
   "homepage": "https://github.com/qntm/minify-numeric-literal",
   "repository": {
