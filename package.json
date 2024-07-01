@@ -10,7 +10,7 @@
   "type": "module",
   "main": "src/minify-numeric-literal.js",
   "devDependencies": {
-    "c8": "^9.1.0",
+    "c8": "^10.1.2",
     "mocha": "^10.0.0",
     "standard": "^17.0.0"
   },
