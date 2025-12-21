@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.0.0
+
+Support for Node.js 18 and lower is dropped.
+
 ## 2.x.x
 
 Now uses ES modules, not CommonJS modules.
