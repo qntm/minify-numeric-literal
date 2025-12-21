@@ -15,10 +15,10 @@
     "standard": "^17.0.0"
   },
   "scripts": {
-    "mocha": "c8 --100 mocha",
+    "unit": "c8 --100 mocha",
     "standard": "standard",
     "postpublish": "npm version patch && git push",
-    "test": "npm run standard && npm run mocha"
+    "test": "npm run standard && npm run unit"
   },
   "author": "qntm",
   "license": "MIT",
