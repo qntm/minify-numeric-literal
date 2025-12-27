@@ -13,7 +13,7 @@
     "standard": "^17.0.0"
   },
   "scripts": {
-    "unit": "node --test --experimental-test-coverage",
+    "unit": "node --test --experimental-test-coverage --test-coverage-functions=100",
     "standard": "standard",
     "postpublish": "npm version patch && git push",
     "test": "npm run standard && npm run unit"
